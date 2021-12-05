@@ -1,8 +1,15 @@
 # login.html
 
 {% block title %} 고려대학교 수강 정보 시스템 로그인 {% endblock %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{messages[0]}}")
+    </script>
+  {% endif %}
+{% endwith %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="author" content="Kodinger">
