@@ -34,11 +34,11 @@ def mycourses():
 
 @app.route('/allcourses')
 def allcourses():
-    cur.execute('SELECT * FROM course, section WHERE course.course_id=section.course_id')
+    cur.execute('SELECT * FROM course, section WHERE course.course_id=section.course_id;')
     result=cur.fetchall()
     modified=result.copy()
     for i in range(len(result)):
-        cur.execute('SELECT * FROM section_time JOIN timeslot ON section_time.timeslot_id=timeslot.id')
+        cur.execute('SELECT * FROM section_time JOIN timeslot ON section_time.timeslot_id=timeslot.id;')
         temp=cur.fetchall()
         modified[i]['timeslot']=''
         for j in temp:
@@ -59,7 +59,7 @@ def blogin():
     print(id, password)
 
     cur.execute(
-        'SELECT * FROM login WHERE id=%s AND password=%s' % (id, hashlib.sha512(password.encode()).hexdigest()))
+        'SELECT * FROM login WHERE id=%s AND password=%s;' % (id, hashlib.sha512(password.encode()).hexdigest()))
     result = cur.fetchall()
     if len(result) != 1:
        flash('No Matching Information')
