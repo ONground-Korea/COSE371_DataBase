@@ -1,3 +1,30 @@
+{% extends "bootstrap/base.html" %}
+{% block title %} Main {% endblock %}
+{% block navbar %}
+<div class="navbar navbar-inverse" role="nvigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse:">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/main">Korea University</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/main">Main</a></li>
+                <li><a href="/mycourses">My Courses</a></li>
+                <li><a href="/allcourses">View All Courses</a></li>
+                <li><a href="/mypage">My Page</a></li>
+                <li><a href="/changepw">Change Password</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -5,30 +32,238 @@
     <title>Courses</title>
 </head>
 <body>
+<div>
+    <form name="sForm" id="sForm" method="post" onsubmit="return false">
+        <table>
+            <colgroup>
+                <col width="60px">
+                <col width="80px">
+                <col width="80px">
+                <col width="80px">
+                <col width="80px">
+                <col width="220px">
+                <col width="80px">
+                <col width="120px">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td colspan="2">
+                    <div class="cols">
+                        <input type="text" name="pYear" id="pYear" value="2021" maxlength="4" style="ime-mode:disabled">
+                        <select name="pTerm" id="pTerm">
+                            <option value="1R">spring</option>
+                            <option value="1S">summer</option>
+                            <option value="2R" selected="">fall</option>
+                            <option value="2W">winter</option>
+                        </select>
+                    </div>
+                </td>
+<!--                <th>캠퍼스</th>-->
+<!--                <td>-->
+<!--                    <select name="pCampus" id="pCampus" onchange="fnCourDiv()">-->
+<!--                        <option value="1" selected="">서울</option>-->
+<!--                        <option value="2">세종</option>-->
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <th>대학구분</th>-->
+<!--                <td>-->
+<!--                    <select name="pGradCd" id="pGradCd" onchange="fnCourDiv()">-->
+<!--                        <option value="0136" selected="">대학</option>-->
+<!--                        <option value="0309">대학원</option>-->
+<!--                    </select>-->
+<!--                </td>-->
+                <th class="isu">이수구분</th>
+                <td class="isu" colspan="2">
+                    <div class="cols">
+                        <select name="pCourDiv" id="pCourDiv" onchange="fnCourDiv()">
+
+                            <option value="00">전공</option>
+                            <option value="24">학문의기초</option>
+                            <option value="01">교양</option>
+                            <option value="30">교직</option>
+                            <option value="41">군사학</option>
+                            <option value="71">평생교육사</option>
+                        </select>
+                        <select name="pCol" id="pCol" onchange="fnCol()" style="display: block;">
+                            <option value="0231">간호대학</option>
+                            <option value="0140">경영대학</option>
+                            <option value="0217">공과대학</option>
+                            <option value="3928">국제학부</option>
+                            <option value="5338">디자인조형학부</option>
+                            <option value="0143">문과대학</option>
+                            <option value="5256">미디어학부</option>
+                            <option value="4669">보건과학대학</option>
+                            <option value="0234">사범대학</option>
+                            <option value="4652">생명과학대학</option>
+                            <option value="6726">스마트보안학부</option>
+                            <option value="6564">심리학부</option>
+                            <option value="0226">의과대학</option>
+                            <option value="0209">이과대학</option>
+                            <option value="0197">정경대학</option>
+                            <option value="5720" selected="">정보대학</option>
+                            <option value="5961">KU-KIST융합대학원(관)</option>
+                            <option value="6458">법학전문대학원(관)</option>
+                            <option value="5963">정보보호대학원(관)</option>
+                        </select>
+                        <select name="pDept" id="pDept" style="display: block;">
+                            <option value="6666">뇌인지과학융합전공</option>
+                            <option value="5965">소프트웨어벤처융합전공</option>
+                            <option value="6545">인공지능융합전공</option>
+                            <option value="5944">정보보호 융합전공</option>
+                            <option value="5722" selected="">컴퓨터학과</option><!-- 각 단과대학 별로 조사해서 if로 hard-coding하든 python 쪽에 요청해서 불러오든 해야 함 -->
+                        </select>
+                        <select name="pGroupCd" id="pGroupCd" style="display:none;" disabled=""></select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>학점</th>
+                <td><input type="text" name="pCredit" id="pCredit" maxlength="3" style="ime-mode:disabled"></td>
+                <th>요일</th>
+                <td>
+                    <select name="pDay" id="pDay">
+                        <option value="">전체--</option>
+                        <option value="1">월</option>
+                        <option value="2">화</option>
+                        <option value="3">수</option>
+                        <option value="4">목</option>
+                        <option value="5">금</option>
+                        <option value="6">토</option>
+                        <option value="7">일</option>
+                    </select>
+                </td>
+                <th>교시</th>
+                <td>
+                    <div class="cols">
+                        <select id="pStartTime" name="pStartTime">
+                            <option value="">전체--</option>
+
+<!--                            <option>-1</option>-->
+
+<!--                            <option>0</option>-->
+
+                            <option>1</option>
+
+                            <option>2</option>
+
+                            <option>3</option>
+
+                            <option>4</option>
+
+                            <option>5</option>
+
+                            <option>6</option>
+
+                            <option>7</option>
+
+                            <option>8</option>
+
+                            <option>9</option>
+
+                            <option>10</option>
+
+                            <option>11</option>
+
+                            <option>12</option>
+
+                            <option>13</option>
+
+                            <option>14</option>
+
+                            <option>15</option>
+
+                        </select>
+                        <span class="unit">~</span>
+                        <select id="pEndTime" name="pEndTime">
+                            <option value="">전체--</option>
+
+<!--                            <option>-1</option>-->
+
+<!--                            <option>0</option>-->
+
+                            <option>1</option>
+
+                            <option>2</option>
+
+                            <option>3</option>
+
+                            <option>4</option>
+
+                            <option>5</option>
+
+                            <option>6</option>
+
+                            <option>7</option>
+
+                            <option>8</option>
+
+                            <option>9</option>
+
+                            <option>10</option>
+
+                            <option>11</option>
+
+                            <option>12</option>
+
+                            <option>13</option>
+
+                            <option>14</option>
+
+                            <option>15</option>
+
+                        </select>
+<!--                        <button type="button" class="btnGyosi" onclick="fnViewTime()">교시확인표</button>-->
+                    </div>
+                </td>
+                <th>담당교수</th>
+                <td><input type="text" name="pProf" id="pProf" style="ime-mode:active;"></td>
+            </tr>
+            <tr>
+                <th>학수번호</th>
+                <td><input style="ime-mode:disabled;" type="text" id="pCourCd" name="pCourCd" maxlength="7"></td>
+                <th>분반</th>
+                <td><input style="ime-mode:disabled;" type="text" id="pCourCls" name="pCourCls" maxlength="2"></td>
+                <th>교과목명</th>
+                <td colspan="3"><input type="text" name="pCourNm" id="pCourNm"></td>
+                <td class="search">
+                    <button type="button" id="btnSearch" class="btn-sub">조회</button>
+                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="hidden" name="strYear" id="strYear" value="2021">
+        <input type="hidden" name="strTerm" id="strTerm" value="2W">
+        <input type="hidden" name="strUserType" id="strUserType" value="RL1 ">
+        <input type="hidden" name="strChasu" id="strChasu" value="">
+    </form>
+    <!-- <div id="warning" style="display: inline-flex;color:#fff;text-align:center;height:30px;width:80%" class="is-green"></div> -->
+</div>
 <table border="1">
     <thead>
-        <th>학수번호<th>
-        <th>분반</th>
-        <th>이수구분</th>
-        <th>개설학과</th>
-        <th>교과목명</th>
-        <th>담당교수</th>
-        <th>학점(시간)</th>
-        <th>강의시간</th>
+    <th>학수번호</th>
+    <th>분반</th>
+    <th>이수구분</th>
+    <th>개설학과</th>
+    <th>교과목명</th>
+    <th>담당교수</th>
+    <th>학점(시간)</th>
+    <th>강의시간</th>
     </thead>
 
     <tbody>
-        {% for course in courses %}
-        <tr>
-            <td>{{course['course_id']}}</td>
-            <td>{{course['section_id']}}</td>
-            <td>{{course['type']}}</td>
-            <td>{{course['dept_name']}}</td>
-            <td>{{course['name']}}</td>
-            <td>{{course['instructor']}}</td>
-            <td>{{course['credits']}}({{course['hour']}})</td>
-            <td>{{course['timeslot']}}</td>
-        </tr>
+    {% for course in courses %}
+    <tr>
+        <td>{{course['course_id']}}</td>
+        <td>{{course['section_id']}}</td>
+        <td>{{course['type']}}</td>
+        <td>{{course['dept_name']}}</td>
+        <td>{{course['name']}}</td>
+        <td>{{course['instructor']}}</td>
+        <td>{{course['credits']}}({{course['hour']}})</td>
+        <td>{{course['timeslot']}}</td>
+    </tr>
     {% endfor %}
     </tbody>
 </table>

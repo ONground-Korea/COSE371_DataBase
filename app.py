@@ -52,6 +52,16 @@ def mypage():
 
 ### Backend ###
 
+@app.route('/changepw', methods=['POST'])
+def changepw():
+    password = request.form['pw']
+    cur.execute(
+        'UPDATE login SET pw=%s;' % hashlib.sha512(password.encode()).hexdigest()
+    )
+    cur.commit()
+    flash('Updated')
+    return render_template('changepw.html')
+
 @app.route('/backend/login', methods=['POST'])
 def blogin():
     id = request.form['id']
@@ -59,7 +69,7 @@ def blogin():
     print(id, password)
 
     cur.execute(
-        'SELECT * FROM login WHERE id=%s AND password=%s;' % (id, hashlib.sha512(password.encode()).hexdigest()))
+        'SELECT * FROM login WHERE id=%s AND pw=%s;' % (id, hashlib.sha512(password.encode()).hexdigest()))
     result = cur.fetchall()
     if len(result) != 1:
        flash('No Matching Information')

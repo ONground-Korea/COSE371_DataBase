@@ -1,13 +1,71 @@
-<!doctype html>
-<html lang="en">
+{% extends "bootstrap/base.html" %}
+{% block title %} Main {% endblock %}
+{% block navbar %}
+<div class="navbar navbar-inverse" role="nvigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse:">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/main">Korea University</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/main">Main</a></li>
+                <li><a href="/mycourses">My Courses</a></li>
+                <li><a href="/allcourses">View All Courses</a></li>
+                <li><a href="/mypage">My Page</a></li>
+                <li><a href="/changepw">Change Password</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>MyPage</title>
 </head>
 <body>
+
+<table border="1">
+    <thead>
+    <th>학번<th>
+    <th>이름</th>
+    <th>이메일</th>
+    <th>단과대학<th>
+    <th>제1전공</th>
+    <th>제2전공</th>
+    <th>지도교수</th>
+    <th>상태(재학/휴학)</th>
+    <th>전화번호</th>
+    <th>주소</th>
+    <th>우편번호</th>
+    <th>생년월일</th>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>{{user['std_id']}}</td>
+        <td>{{user['name']}}</td>
+        <td>{{user['email']}}</td>
+        <td>{{user['college']}}</td>
+        <td>{{user['first_major']}}</td>
+        <td>{{user['second_major']}}</td>
+        <td>{{user['std_instructor']}}</td>
+        <td>{{user['std_status']}}</td>
+        <td>{{user['phone_number']}}</td>
+        <td>{{user['address']}}</td>
+        <td>{{user['zip_code']}}</td>
+        <td>{{user['birthday']}}</td>
+    </tr>
+    </tbody>
+</table>
 
 </body>
 </html>
