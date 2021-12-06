@@ -25,6 +25,7 @@
 </div>
 {% endblock %}
 
+{% block content %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -259,8 +260,8 @@
         <td>{{course['section_id']}}</td>
         <td>{{course['type']}}</td>
         <td>{{course['dept_name']}}</td>
-        <td>{{course['name']}}</td>
-        <td>{{course['instructor']}}</td>
+        <td>{{course['course_name']}}</td>
+        <td>{{course['instructor_id']}}</td>
         <td>{{course['credits']}}({{course['hour']}})</td>
         <td>{{course['timeslot']}}</td>
     </tr>
@@ -270,3 +271,4 @@
 
 </body>
 </html>
+{% endblock %}

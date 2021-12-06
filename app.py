@@ -5,6 +5,7 @@ import psycopg2.extras
 import hashlib
 
 app = Flask(__name__)
+app.secret_key="veryverypublic"
 Bootstrap(app)
 
 connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
