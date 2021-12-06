@@ -16,10 +16,10 @@ create table college (
     college_name varchar(10) primary key
 );
 create table place (
+    id serial primary key,
     building varchar(20) not null,
     building_address varchar(4) not null,
-    place_name varchar(20),
-    primary key (building, building_address)
+    place_name varchar(20)
 );
 create table timeslot (
     id serial primary key,
@@ -64,7 +64,8 @@ create table section (
     instructor_id varchar(20) references instructor(instructor_id));
 create table section_time (
     section_id int references section(id) not null,
-    timeslot_id int references timeslot(id)
+    timeslot_id int references timeslot(id),
+    place_id int references place(id)
 );
 create table student (
     std_id varchar(10) primary key,
@@ -90,21 +91,32 @@ create table takes (
     primary key (std_id, section_id)
 );
 
-insert into login values ('2020320078', 'onground', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
-insert into student values ('2020320078', '한지상', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '01054968096', '서울시 도봉구 방학동', '01337', '20010214', 'jisang77747@gmail.com');
+insert into college values ('정보대학');
 
-insert into login values ('2020320044', '0713jake', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
-insert into student values ('2020320044', '백민규', '정보대학', '컴퓨터학과', '정보보호융합전공', '2020320003', 'present', '01059231480', '서울시 강남구 일원동', '06344', '20010713', '0713jake@naver.com');
+insert into department values ('컴퓨터학과', '정보대학');
+insert into department values ('정보보호융합전공', '정보대학');
 
-insert into login values ('2020320010', 'jbw', '00b884f39f8ff85732e20e05ce4b382fde04d79b28e40e8b7ff87709447f00e35ec3a488aaf23703f97a10b69a18c4161f87aa55b5e3afd09124c883341e78f0');
+insert into place values (default, '우정정보관', '101', null);
+
+insert into timeslot values (default, 'monday', 1, '09:00:00', '10:15:00');
+
+insert into grades values ('A+', 4.5);
 
 insert into instructor values ('2020320001','이혁기', '정보대학','컴퓨터학과');
 insert into instructor values ('2020320002', '김승룡', '정보대학', '컴퓨터학과');
 insert into instructor values ('2020320003', '정원기', '정보대학', '컴퓨터학과');
 insert into instructor values ('2020320004', '강재우','정보대학','컴퓨터학과');
 
+insert into student values ('2020320078', '한지상', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '01054968096', '서울시 도봉구 방학동', '01337', '20010214', 'jisang77747@gmail.com');
+insert into login values ('2020320078', 'onground', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
+
+insert into student values ('2020320044', '백민규', '정보대학', '컴퓨터학과', '정보보호융합전공', '2020320003', 'present', '01059231480', '서울시 강남구 일원동', '06344', '20010713', '0713jake@naver.com');
+insert into login values ('2020320044', '0713jake', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
+
+insert into login values ('2020320010', 'jbw', '00b884f39f8ff85732e20e05ce4b382fde04d79b28e40e8b7ff87709447f00e35ec3a488aaf23703f97a10b69a18c4161f87aa55b5e3afd09124c883341e78f0');
+
 insert into course values ('COSE371','데이터베이스', '컴퓨터학과','major_required','3','3');
-insert into section values (DEFAULT, 'COSE371','02','2021','fall','2020320001');
+insert into section values (default, 'COSE371','02','2021','fall','2020320001');
 
 insert into course values ('COSE362','기계학습','컴퓨터학과','major_elective','3','3');
-insert into section values (DEFAULT, 'COSE362','03','2021','FALL','2020320004');
+insert into section values (default, 'COSE362','03','2021','FALL','2020320004');

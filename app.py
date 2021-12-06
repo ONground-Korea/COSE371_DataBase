@@ -7,7 +7,7 @@ import hashlib
 app = Flask(__name__)
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000")
+connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 ### Frontend ###
