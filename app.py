@@ -7,26 +7,38 @@ import hashlib
 app = Flask(__name__)
 Bootstrap(app)
 
-
 # connect=psycopg2.connect("dbname=원하는거 user=postgres password=알아서")
 # cur=connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 ### Frontend ###
 
-@app.route('/program/<name>')
-def program(name):
-    return render_template('bootstrap.html', name=name)
-
+#@app.route('/program/<name>')
+#def program(name):
+#    return render_template('bootstrap.html', name=name)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 @app.route('/login')
 def login():
     return render_template('login.html')
 
+@app.route('/main')
+def main():
+    return render_template('mainpage.html')
+
+@app.route('/mycourses')
+def mycourses():
+    return render_template('mycourses.html')
+
+@app.route('/allcourses')
+def allcourses():
+    return render_template('allcourses.html')
+
+@app.route('/mypage')
+def mypage():
+    return render_template('mypage.html')
 
 ### Backend ###
 
