@@ -56,7 +56,7 @@ def mypage():
 def changepw():
     password = request.form['pw']
     cur.execute(
-        'UPDATE login SET pw=%s;' % hashlib.sha512(password.encode()).hexdigest()
+        "UPDATE login SET pw='%s';" % hashlib.sha512(password.encode()).hexdigest()
     )
     cur.commit()
     flash('Updated')
@@ -69,7 +69,7 @@ def blogin():
     print(id, password)
 
     cur.execute(
-        'SELECT * FROM login WHERE id=%s AND pw=%s;' % (id, hashlib.sha512(password.encode()).hexdigest()))
+        "SELECT * FROM login WHERE id='%s' AND pw='%s';" % (id, hashlib.sha512(password.encode()).hexdigest()))
     result = cur.fetchall()
     if len(result) != 1:
        flash('No Matching Information')
