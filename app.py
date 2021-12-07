@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = "veryverypublic"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
+connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 
@@ -84,12 +84,16 @@ def mypage():
 @app.route('/changepw', methods=['GET', 'POST'])
 def changepw():
     if request.method == 'POST':
+        id = request.form['id']
         password = request.form['pw']
         cur.execute(
-            "UPDATE login SET pw='%s';" % hashlib.sha512(password.encode()).hexdigest()
+            "UPDATE login SET pw='%s' WHERE id = '%s';" % (hashlib.sha512(password.encode()).hexdigest(), id)
         )
+        return render_template('login.html')
+
         cur.commit()
         flash('Updated')
+
     return render_template('changepw.html')
 
 
@@ -129,28 +133,30 @@ def admin():
     # TODO
     # 기본 검색 기능은 일반 유저와 동일하게 가능하도록.
 
-    if request.method == 'POST':
-        # TODO
-        # 과목 추가 기능
-        course_id =
-        section_id =
-        course_name =
-        dept_name =
-        type =
-        credits =
-        hour =
-        year =
-        semester =
-        instructor_id =
+    # if request.method == 'POST':
+    #     # TODO
+    #     # 과목 추가 기능
+    #     course_id =
+    #     section_id =
+    #     course_name =
+    #     dept_name =
+    #     type =
+    #     credits =
+    #     hour =
+    #     year =
+    #     semester =
+    #     instructor_id =
+    #
+    #     cur.execute(
+    #         "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
+    #         course_id, course_name, dept_name, type, credits, hour)
+    #     )
+    #     cur.execute(
+    #         "INSERT INTO section VALUES ('%s','%s','%s','%s','%s','%s');" % (
+    #         "DEFAULT", course_id, section_id, year, semester, instructor_id)
+    #     )
 
-        cur.execute(
-            "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
-            course_id, course_name, dept_name, type, credits, hour)
-        )
-        cur.execute(
-            "INSERT INTO section VALUES ('%s','%s','%s','%s','%s','%s');" % (
-            "DEFAULT", course_id, section_id, year, semester, instructor_id)
-        )
+    return render_template('admin.html')
 
 
 if __name__ == '__main__':
