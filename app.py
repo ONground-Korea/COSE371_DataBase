@@ -1,3 +1,4 @@
+import requests
 from flask import *
 from flask_bootstrap import Bootstrap
 import psycopg2
@@ -33,14 +34,13 @@ def mycourses():
 
 @app.route('/allcourses', methods=['GET', 'POST'])
 def allcourses():
-    query = 'SELECT * FROM section, course JOIN department ON course.dept_name=department.college_name WHERE course.course_id=section.course_id'
+    query = 'SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.college_name WHERE course.course_id=section.course_id'
     if request.method == 'POST':
         year = request.form['pYear']
         semester = request.form['pTerm']
         college = request.form['pCol']
         credit = request.form['pCredit']
-        day = request.form['pDay']
-        hour = request.form['pStartTime']
+        instructor = request.form['pProf']
         # TODO
         if year != '':
             query += " AND section.year=%d" % int(year)
@@ -52,27 +52,46 @@ def allcourses():
             else:
                 query+=" AND course.type<>'elective' AND course.dept_name='%s'"%college
         if credit != '':
-                query+=" AND course.credit=%d"%credit
-
-
-
-    cur.execute(';')
+            query+=" AND course.credit=%d"%credit
+        if instructor != '':
+            query+=" AND section.instructor_name='%s'"%instructor
+    query+=' ORDER BY course_id, section_id ASC;'
+    cur.execute(query)
     result = cur.fetchall()
-    modified = result.copy()
-    for i in range(len(result)):
-        cur.execute('SELECT * FROM section_time JOIN timeslot ON section_time.timeslot_id=timeslot.id;')
-        temp = cur.fetchall()
-        modified[i]['timeslot'] = ''
-        for j in temp:
-            modified[i]['timeslot'] += j['day'] + '요일 ' + j['period'] + '교시\n'
-        modified[i]['timeslot'] = modified[i]['timeslot'].rstrip()
+    modified=[]
+    for i in result:
+        query2="SELECT * FROM section_time JOIN timeslot ON section_time.timeslot_id=timeslot.id WHERE section_id='%s'"%i['id']
+        if request.method == 'POST':
+            day = request.form['pDay']
+            time = request.form['pStartTime']
+            if day!='':
+                query2+=" AND day='%s'"%day
+            if time!='':
+                query2+=" AND period=%d"%int(time)
+        query2+=' ORDER BY timeslot_id ASC;'
+        cur.execute(query2)
+        temp=cur.fetchall()
+        if len(temp)>0:
+            modified.append(i)
+            modified[-1]['timeslot']=''
+            for j in temp:
+                modified[-1]['timeslot']+=j['day']+' '+j['period']+'교시\n'
+            modified[-1]['timeslot']=modified[-1]['timeslot'].rstrip()
     return render_template('allcourses.html', courses=modified)
 
 
 @app.route('/mypage', methods=['GET', 'POST'])
 def mypage():
+    # TODO
+    # 학생 개인정보 가져오는 쿼리 짜야함.
+    cur.execute(
+        "SELECT * FROM "
+    )
+
+    # 탈퇴 버튼 누를 시
+    # login정보 삭제
     if request.method == 'POST':
-        std_id = request.form['std+id']
+        std_id = request.form['std_id']
         cur.execute(
             "DELETE FROM login WEHRE std_id = '%s';" % (std_id)
         )
@@ -124,7 +143,7 @@ def register():
     password = request.form['password']
 
     cur.execute(
-        "UPDATE login SET pw='%s';" % (password)
+        "UPDATE login SET pw='%s';" % hashlib.sha512(password.encode()).hexdigest()
     )
 
 
@@ -133,28 +152,39 @@ def admin():
     # TODO
     # 기본 검색 기능은 일반 유저와 동일하게 가능하도록.
 
-    # if request.method == 'POST':
-    #     # TODO
-    #     # 과목 추가 기능
-    #     course_id =
-    #     section_id =
-    #     course_name =
-    #     dept_name =
-    #     type =
-    #     credits =
-    #     hour =
-    #     year =
-    #     semester =
-    #     instructor_id =
-    #
-    #     cur.execute(
-    #         "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
-    #         course_id, course_name, dept_name, type, credits, hour)
-    #     )
-    #     cur.execute(
-    #         "INSERT INTO section VALUES ('%s','%s','%s','%s','%s','%s');" % (
-    #         "DEFAULT", course_id, section_id, year, semester, instructor_id)
-    #     )
+    if request.method == 'POST':
+        if request.form.get('submit') == "submit":
+            # TODO
+            # 과목 추가 기능
+            course_id = request.form['course_id']
+            section_id = request.form['section_id']
+            course_name = request.form['course_name']
+            dept_name = request.form['dept_name']
+            type = request.form['type']
+            credits = request.form['credits']
+            hour = request.form['hour']
+            year = request.form['year']
+            semester = request.form['semeseter']
+            instructor_id = request.form['instructor_id']
+
+            cur.execute(
+                "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
+                    course_id, course_name, dept_name, type, credits, hour)
+            )
+            cur.execute(
+                "INSERT INTO section VALUES ('%s','%s','%s','%s','%s','%s');" % (
+                    "DEFAULT", course_id, section_id, year, semester, instructor_id)
+            )
+
+        elif request.form.get('delete') == "delete":
+            # 과목 삭제 기능
+            dcourse_id = request.form['dcourse_id']
+            dyear = request.form['dyear']
+            dsemester = request.form['dsemester']
+            dsection_id = request.form['dsection_id']
+
+            cur.execute()
+
 
     return render_template('admin.html')
 
