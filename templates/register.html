@@ -1,12 +1,12 @@
 # login.html
 
-{% block title %} 고려대학교 수강 정보 시스템 로그인 {% endblock %}
+{% block title %} 고려대학교 수강 정보 시스템 회원가입 {% endblock %}
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script>
-      alert("{{messages[0]}}")
-    </script>
-  {% endif %}
+{% if messages %}
+<script>
+  alert("{{messages[0]}}")
+</script>
+{% endif %}
 {% endwith %}
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,7 +14,7 @@
   <meta charset="utf-8">
   <meta name="author" content="Kodinger">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>My Login Page</title>
+  <title>My Register Page</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/my-login.css">
 </head>
@@ -30,7 +30,7 @@
         <div class="card fat">
           <div class="card-body">
             <h4 class="card-title">Login</h4>
-            <form action="/login" method="POST" class="my-login-validation" novalidate="">
+            <form action="/register" method="POST" class="my-login-validation" novalidate="">
               <div class="form-group">
                 <label for="user_id">ID</label>
                 <input id="user_id" type="text" class="form-control" name="id" value="" required autofocus>
@@ -57,7 +57,7 @@
 
               <div class="form-group m-0">
                 <button type="submit" class="btn btn-primary btn-block">
-                  Login
+                  Register
                 </button>
               </div>
               <div class="mt-4 text-center">
