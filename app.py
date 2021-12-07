@@ -195,7 +195,9 @@ def admin():
             dsemester = request.form['dsemester']
             dsection_id = request.form['dsection_id']
 
-            cur.execute()
+            cur.execute(
+                "DELETE FROM section WHERE (course_id, section_id, year, semester) = ('%s','%s', '%s','%s')" %(dcourse_id, dsection_id, dyear, dsemester)
+            )
 
 
     return render_template('admin.html')
