@@ -61,11 +61,13 @@ create table section (
     section_id varchar(2),
     year int check(year>=1905),
     semester varchar(6) check(semester in ('spring', 'summer', 'fall', 'winter')),
-    instructor_id varchar(20) references instructor(instructor_id));
+    instructor_id varchar(20) references instructor(instructor_id)
+);
 create table section_time (
     section_id int references section(id) not null,
     timeslot_id int references timeslot(id),
-    place_id int references place(id)
+    place_id int references place(id),
+    primary key(section_id, timeslot_id)
 );
 create table student (
     std_id varchar(10) primary key,
@@ -79,11 +81,13 @@ create table student (
     address varchar(100),
     zip_code char(5),
     birthday date not null,
-    email varchar(30));
+    email varchar(30)
+);
 create table login (
     std_id varchar(10) references student(std_id) on delete cascade not null,
     id varchar(30) primary key,
-    pw varchar(200) not null);
+    pw varchar(200) not null
+);
 create table takes (
     std_id varchar(10) references student(std_id) on delete cascade not null,
     section_id int references section(id) not null,
@@ -203,20 +207,40 @@ insert into instructor values ('2020320005', '정순영','정보대학','컴퓨�
 insert into instructor values ('2020320006', '김현철','정보대학','컴퓨터학과');
 insert into instructor values ('2020320007', '육동석','정보대학','컴퓨터학과');
 
-insert into student values ('2020320078', '한지상', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '01054968096', '서울시 도봉구 방학동', '01337', '20010214', 'jisang77747@gmail.com');
+insert into student values ('2020320078', '한지상', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '01054968096', '서울특별시 도봉구 방학동', '01337', '20010214', 'jisang77747@gmail.com');
 insert into login values ('2020320078', 'onground', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
 
-insert into student values ('2020320044', '백민규', '정보대학', '컴퓨터학과', '정보보호융합전공', '2020320003', 'present', '01059231480', '서울시 강남구 일원동', '06344', '20010713', '0713jake@naver.com');
+insert into student values ('2020320044', '백민규', '정보대학', '컴퓨터학과', '정보보호융합전공', '2020320003', 'present', '01059231480', '서울특별시 강남구 일원동', '06344', '20010713', '0713jake@naver.com');
 insert into login values ('2020320044', '0713jake', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
 
-insert into student values ('2020320010', '전병우', '정보대학', '컴퓨터학과', '통계학과', '2020320003', 'present', '01012341480', '서울시 중구 황학동', '12345', '19980623', 'ipcs@naver.com');
+insert into student values ('2020320010', '전병우', '정보대학', '컴퓨터학과', '통계학과', '2020320003', 'present', '01012341480', '서울특별시 중구 황학동', '12345', '19980623', 'ipcs@naver.com');
 insert into login values ('2020320010', 'jbw', '00b884f39f8ff85732e20e05ce4b382fde04d79b28e40e8b7ff87709447f00e35ec3a488aaf23703f97a10b69a18c4161f87aa55b5e3afd09124c883341e78f0');
 
 insert into course values ('COSE371','데이터베이스', '컴퓨터학과','major_required',3,3);
 insert into section values (default, 'COSE371','01','2021','fall','2020320005');
 insert into section values (default, 'COSE371','02','2021','fall','2020320001');
+insert into section_time values (2, 18, 1);
+insert into section_time values (2, 19, 1);
+insert into section_time values (2, 40, 1);
+
+insert into course values ('COSE213', '자료구조', '컴퓨터학과', 'major_required', 3, 3);
+
+insert into course values ('COSE101', '컴퓨터프로그래밍I', '컴퓨터학과', 'elective', 3, 3);
+
+insert into course values ('COSE102', '컴퓨터프로그래밍II', '컴퓨터학과', 'elective', 3, 3);
+
+insert into prereq values ('COSE371', 'COSE213');
+insert into prereq values ('COSE371', 'COSE101');
+insert into prereq values ('COSE371', 'COSE102');
+insert into prereq values ('COSE213', 'COSE101');
+insert into prereq values ('COSE213', 'COSE102');
 
 insert into course values ('COSE362','기계학습','컴퓨터학과','major_elective',3,3);
 insert into section values (default, 'COSE362','01','2021','fall','2020320007');
 insert into section values (default, 'COSE362','02','2021','fall','2020320006');
 insert into section values (default, 'COSE362','03','2021','fall','2020320004');
+
+insert into takes values ('2020320078', 2, 'A+');
+insert into takes values ('2020320044', 2, 'A+');
+insert into takes values ('2020320010', 2, 'A+');
+insert into takes values ('2020320078', 5, 'A');
