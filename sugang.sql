@@ -238,7 +238,8 @@ insert into section_time values (2, 40, 1);
 insert into course values ('COSE213', '자료구조', '컴퓨터학과', 'major_required', 3, 3);
 insert into section values (default, 'COSE213', '01', '2021', 'fall','2020320003');
 insert into section values (default, 'COSE213', '02', '2021', 'fall','2020320008');
-
+insert into section_time values (3, 16, null);
+insert into section_time values (3, 38, null);
 
 insert into course values ('COSE101', '컴퓨터프로그래밍I', '컴퓨터학과', 'elective', 3, 3);
 

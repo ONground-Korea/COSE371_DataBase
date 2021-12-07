@@ -34,7 +34,7 @@
 </head>
 <body>
 <div>
-    <form name="sForm" id="sForm" method="post" onsubmit="return false">
+    <form name="sForm" id="sForm" method="POST" action='/allcourses' onsubmit="return false">
         <table>
             <colgroup>
                 <col width="60px">
@@ -229,8 +229,8 @@
                 <th>교과목명</th>
                 <td colspan="3"><input type="text" name="pCourNm" id="pCourNm"></td>
                 <td class="search">
-                    <button type="button" id="btnSearch" class="btn-sub">조회</button>
-                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>
+                    <button type="submit" id="btnSearch" class="btn-sub">조회</button>
+<!--                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>-->
                 </td>
             </tr>
             </tbody>
@@ -262,9 +262,13 @@
         <td>{{course['type']}}</td>
         <td>{{course['dept_name']}}</td>
         <td>{{course['course_name']}}</td>
-        <td>{{course['instructor_id']}}</td>
+        <td>{{course['instructor_name']}}</td>
         <td>{{course['credits']}}({{course['hour']}})</td>
-        <td>{{course['timeslot']}}</td>
+        <td>
+            {% for timeslot in course['timeslot'] %}
+            {{timeslot}}<br>
+            {% endfor %}
+        </td>
     </tr>
     {% endfor %}
     </tbody>
