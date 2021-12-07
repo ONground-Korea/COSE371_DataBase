@@ -206,6 +206,15 @@ insert into instructor values ('2020320004', '강재우','정보대학','컴퓨�
 insert into instructor values ('2020320005', '정순영','정보대학','컴퓨터학과');
 insert into instructor values ('2020320006', '김현철','정보대학','컴퓨터학과');
 insert into instructor values ('2020320007', '육동석','정보대학','컴퓨터학과');
+insert into instructor values ('2020320008', '김선희','정보대학','컴퓨터학과');
+insert into instructor values ('2020320009', '김진규','정보대학','컴퓨터학과');
+insert into instructor values ('2020320010', '박성빈','정보대학','컴퓨터학과');
+insert into instructor values ('2020320011', '서태원','정보대학','컴퓨터학과');
+insert into instructor values ('2020320012', '구건재','정보대학','컴퓨터학과');
+insert into instructor values ('2020320013', '정성우','정보대학','컴퓨터학과');
+insert into instructor values ('2020320014', '민성기','정보대학','컴퓨터학과');
+insert into instructor values ('2020320015', '김효곤','정보대학','컴퓨터학과');
+insert into instructor values ('2020320016', '이도길','정보대학','컴퓨터학과');
 
 insert into student values ('2020320078', '한지상', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '01054968096', '서울특별시 도봉구 방학동', '01337', '20010214', 'jisang77747@gmail.com');
 insert into login values ('2020320078', 'onground', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
@@ -224,6 +233,9 @@ insert into section_time values (2, 19, 1);
 insert into section_time values (2, 40, 1);
 
 insert into course values ('COSE213', '자료구조', '컴퓨터학과', 'major_required', 3, 3);
+insert into section values (default, 'COSE213', '01', '2021', 'fall','2020320003');
+insert into section values (default, 'COSE213', '02', '2021', 'fall','2020320008');
+
 
 insert into course values ('COSE101', '컴퓨터프로그래밍I', '컴퓨터학과', 'elective', 3, 3);
 
