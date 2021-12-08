@@ -34,7 +34,7 @@
 </head>
 <body>
 <div>
-    <form name="sForm" id="sForm" method="POST" action='/allcourses' onsubmit="return false">
+    <form name="sForm" id="sForm" method="POST" action='/allcourses'>
         <table>
             <colgroup>
                 <col width="60px">
@@ -229,7 +229,7 @@
                 <th>교과목명</th>
                 <td colspan="3"><input type="text" name="pCourNm" id="pCourNm"></td>
                 <td class="search">
-                    <button type="submit" id="btnSearch" class="btn-sub">조회</button>
+                    <button type="submit" name="submit" value="submit" id="btnSearch" class="btn-sub">조회</button>
 <!--                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>-->
                 </td>
             </tr>

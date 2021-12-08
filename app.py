@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
+connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user=None
 
@@ -40,34 +40,37 @@ def mycourses():
 def allcourses():
     query = 'SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name WHERE course.course_id=section.course_id'
     if request.method == 'POST':
-        year = request.form['pYear']
-        semester = request.form['pTerm']
-        college = request.form['pCol']
-        credit = request.form['pCredit']
-        instructor = request.form['pProf']
-        course_id = request.form['pCourCd']
-        section_id = request.form['pCourCls']
-        course_name = request.form['pCourNm']
-        # TODO
-        if year != '':
-            query += " AND section.year=%d" % int(year)
-        if semester != '':
-            query += " AND section.semester='%s'" % semester
-        if college != '':
-            if college=='교양':
-                query+=" AND course.type='elective'"
-            else:
-                query+=" AND course.type<>'elective' AND course.dept_name='%s'"%college
-        if credit != '':
-            query+=" AND course.credit=%d"%credit
-        if instructor != '':
-            query+=" AND section.instructor_name LIKE '%%%s%%'"%instructor
-        if course_id != '':
-            query+=" AND course.course_id LIKE '%%%s%%'"%course_id
-        if section_id != '':
-            query+=" AND section.section_id LIKE '%%%s%%'"%section_id
-        if course_name != '':
-            query+=" AND course.course_name LIKE '%%%s%%'"%course_name
+        if request.form.get('submit') == "submit":
+            year = request.form['pYear']
+            semester = request.form['pTerm']
+            college = request.form['pCol']
+            credit = request.form['pCredit']
+            instructor = request.form['pProf']
+            course_id = request.form['pCourCd']
+            section_id = request.form['pCourCls']
+            course_name = request.form['pCourNm']
+            print(year, semester, college, credit, instructor, course_id, section_id, course_name)
+            # TODO
+            if year != '':
+                query += " AND section.year=%d" % int(year)
+            if semester != '':
+                query += " AND section.semester='%s'" % semester
+            if college != '':
+                if college=='교양':
+                    query+=" AND course.type='elective'"
+                else:
+                    query+=" AND course.type<>'elective' AND course.dept_name='%s'"%college
+            if credit != '':
+                query+=" AND course.credit=%d"%credit
+            if instructor != '':
+                query+=" AND section.instructor_name LIKE '%%%s%%'"%instructor
+            if course_id != '':
+                query+=" AND course.course_id LIKE '%%%s%%'"%course_id
+            if section_id != '':
+                query+=" AND section.section_id LIKE '%%%s%%'"%section_id
+            if course_name != '':
+                query+=" AND course.course_name LIKE '%%%s%%'"%course_name
+
     query+=' ORDER BY section.course_id, section.section_id ASC;'
     cur.execute(query)
     result = cur.fetchall()
