@@ -30,7 +30,7 @@ def main():
 @app.route('/mycourses')
 def mycourses():
     global user
-    query = "SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name WHERE course.course_id=section.course_id, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE section.id=takes.section_id AND temp.id='%s'"%user
+    query = "SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE course.course_id=section.course_id AND section.id=temp.section_id AND temp.id='%s'"%user
     cur.execute(query)
     result=cur.fetchall()
     return render_template('mycourses.html', courses=result)
@@ -40,6 +40,7 @@ def mycourses():
 def allcourses():
     query = 'SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name WHERE course.course_id=section.course_id'
     if request.method == 'POST':
+        print(request.form)
         year = request.form['pYear']
         semester = request.form['pTerm']
         college = request.form['pCol']
@@ -111,7 +112,7 @@ def mypage():
     # TODO
     # 학생 개인정보 가져오는 쿼리 짜야함.
     cur.execute(
-        "SELECT * FROM student JOIN login ON student.std_id=login.std_id WHERE login.id='%s'"%user
+        "SELECT * FROM student JOIN login ON student.std_id=login.std_id JOIN instructor ON student.std_instructor=instructor.instructor_id WHERE login.id='%s'"%user
     )
     result=cur.fetchall()
     return render_template('mypage.html', user=result[0])
