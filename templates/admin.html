@@ -26,10 +26,10 @@
                     <div class="cols">
                         <input type="text" name="pYear" id="pYear" value="2021" maxlength="4" style="ime-mode:disabled">
                         <select name="pTerm" id="pTerm">
-                            <option value="1R">spring</option>
-                            <option value="1S">summer</option>
-                            <option value="2R" selected="">fall</option>
-                            <option value="2W">winter</option>
+                            <option value="spring">spring</option>
+                            <option value="summer">summer</option>
+                            <option value="fall" selected="">fall</option>
+                            <option value="winter">winter</option>
                         </select>
                     </div>
                 </td>
@@ -50,44 +50,44 @@
                 <th class="isu">이수구분</th>
                 <td class="isu" colspan="2">
                     <div class="cols">
-                        <select name="pCourDiv" id="pCourDiv" onchange="fnCourDiv()">
+                        <!--                        <select name="pCourDiv" id="pCourDiv" onchange="fnCourDiv()">-->
 
-                            <option value="00">전공</option>
-                            <option value="24">학문의기초</option>
-                            <option value="01">교양</option>
-                            <option value="30">교직</option>
-                            <option value="41">군사학</option>
-                            <option value="71">평생교육사</option>
-                        </select>
+                        <!--                            <option value="00">전공</option>-->
+                        <!--                            <option value="24">학문의기초</option>-->
+                        <!--                            <option value="01">교양</option>-->
+                        <!--                            <option value="30">교직</option>-->
+                        <!--                            <option value="41">군사학</option>-->
+                        <!--                            <option value="71">평생교육사</option>-->
+                        <!--                        </select>-->
                         <select name="pCol" id="pCol" onchange="fnCol()" style="display: block;">
-                            <option value="0231">간호대학</option>
-                            <option value="0140">경영대학</option>
-                            <option value="0217">공과대학</option>
-                            <option value="3928">국제학부</option>
-                            <option value="5338">디자인조형학부</option>
-                            <option value="0143">문과대학</option>
-                            <option value="5256">미디어학부</option>
-                            <option value="4669">보건과학대학</option>
-                            <option value="0234">사범대학</option>
-                            <option value="4652">생명과학대학</option>
-                            <option value="6726">스마트보안학부</option>
-                            <option value="6564">심리학부</option>
-                            <option value="0226">의과대학</option>
-                            <option value="0209">이과대학</option>
-                            <option value="0197">정경대학</option>
-                            <option value="5720" selected="">정보대학</option>
-                            <option value="5961">KU-KIST융합대학원(관)</option>
-                            <option value="6458">법학전문대학원(관)</option>
-                            <option value="5963">정보보호대학원(관)</option>
+                            <option value="간호대학">간호대학</option>
+                            <option value="경영대학">경영대학</option>
+                            <option value="공과대학">공과대학</option>
+                            <option value="국제학부">국제학부</option>
+                            <option value="디자인조형학부">디자인조형학부</option>
+                            <option value="문과대학">문과대학</option>
+                            <option value="미디어학부">미디어학부</option>
+                            <option value="보건과학대학">보건과학대학</option>
+                            <option value="사범대학">사범대학</option>
+                            <option value="생명과학대학">생명과학대학</option>
+                            <option value="스마트보안학부">스마트보안학부</option>
+                            <option value="심리학부">심리학부</option>
+                            <option value="의과대학">의과대학</option>
+                            <option value="이과대학">이과대학</option>
+                            <option value="정경대학">정경대학</option>
+                            <option value="정보대학" selected="">정보대학</option>
+                            <option value="KU-KIST융합대학원(관)">KU-KIST융합대학원(관)</option>
+                            <option value="법학전문대학원(관)">법학전문대학원(관)</option>
+                            <option value="정보보호대학원(관)">정보보호대학원(관)</option>
+                            <option value="교양">교양</option>
                         </select>
-                        <select name="pDept" id="pDept" style="display: block;">
-                            <option value="6666">뇌인지과학융합전공</option>
-                            <option value="5965">소프트웨어벤처융합전공</option>
-                            <option value="6545">인공지능융합전공</option>
-                            <option value="5944">정보보호 융합전공</option>
-                            <option value="5722" selected="">컴퓨터학과</option>
-                            <!-- 각 단과대학 별로 조사해서 if로 hard-coding하든 python 쪽에 요청해서 불러오든 해야 함 -->
-                        </select>
+                        <!--                        <select name="pDept" id="pDept" style="display: block;">-->
+                        <!--                            <option value="6666">뇌인지과학융합전공</option>-->
+                        <!--                            <option value="5965">소프트웨어벤처융합전공</option>-->
+                        <!--                            <option value="6545">인공지능융합전공</option>-->
+                        <!--                            <option value="5944">정보보호 융합전공</option>-->
+                        <!--                            <option value="5722" selected="">컴퓨터학과</option>-->
+                        <!--                        </select>-->
                         <select name="pGroupCd" id="pGroupCd" style="display:none;" disabled=""></select>
                     </div>
                 </td>
@@ -99,13 +99,13 @@
                 <td>
                     <select name="pDay" id="pDay">
                         <option value="">전체--</option>
-                        <option value="1">월</option>
-                        <option value="2">화</option>
-                        <option value="3">수</option>
-                        <option value="4">목</option>
-                        <option value="5">금</option>
-                        <option value="6">토</option>
-                        <option value="7">일</option>
+                        <option value="monday">월</option>
+                        <option value="tuesday">화</option>
+                        <option value="wednesday">수</option>
+                        <option value="thursday">목</option>
+                        <option value="friday">금</option>
+                        <option value="saturday">토</option>
+                        <option value="sunday">일</option>
                     </select>
                 </td>
                 <th>교시</th>
@@ -140,55 +140,55 @@
 
                             <option>11</option>
 
-                            <option>12</option>
+                            <!--                            <option>12</option>-->
 
-                            <option>13</option>
+                            <!--                            <option>13</option>-->
 
-                            <option>14</option>
+                            <!--                            <option>14</option>-->
 
-                            <option>15</option>
+                            <!--                            <option>15</option>-->
 
-                        </select>
-                        <span class="unit">~</span>
-                        <select id="pEndTime" name="pEndTime">
-                            <option value="">전체--</option>
+                            <!--                        </select>-->
+                            <!--                        <span class="unit">~</span>-->
+                            <!--                        <select id="pEndTime" name="pEndTime">-->
+                            <!--                            <option value="">전체&#45;&#45;</option>-->
 
                             <!--                            <option>-1</option>-->
 
                             <!--                            <option>0</option>-->
 
-                            <option>1</option>
+                            <!--                            <option>1</option>-->
 
-                            <option>2</option>
+                            <!--                            <option>2</option>-->
 
-                            <option>3</option>
+                            <!--                            <option>3</option>-->
 
-                            <option>4</option>
+                            <!--                            <option>4</option>-->
 
-                            <option>5</option>
+                            <!--                            <option>5</option>-->
 
-                            <option>6</option>
+                            <!--                            <option>6</option>-->
 
-                            <option>7</option>
+                            <!--                            <option>7</option>-->
 
-                            <option>8</option>
+                            <!--                            <option>8</option>-->
 
-                            <option>9</option>
+                            <!--                            <option>9</option>-->
 
-                            <option>10</option>
+                            <!--                            <option>10</option>-->
 
-                            <option>11</option>
+                            <!--                            <option>11</option>-->
 
-                            <option>12</option>
+                            <!--                            <option>12</option>-->
 
-                            <option>13</option>
+                            <!--                            <option>13</option>-->
 
-                            <option>14</option>
+                            <!--                            <option>14</option>-->
 
-                            <option>15</option>
+                            <!--                            <option>15</option>-->
 
-                        </select>
-                        <!--                        <button type="button" class="btnGyosi" onclick="fnViewTime()">교시확인표</button>-->
+                            <!--                        </select>-->
+                            <!--                        <button type="button" class="btnGyosi" onclick="fnViewTime()">교시확인표</button>-->
                     </div>
                 </td>
                 <th>담당교수</th>
@@ -202,8 +202,8 @@
                 <th>교과목명</th>
                 <td colspan="3"><input type="text" name="pCourNm" id="pCourNm"></td>
                 <td class="search">
-                    <button type="button" id="btnSearch" class="btn-sub">조회</button>
-                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>
+                    <button type="submit" id="btnSearch" class="btn-sub">조회</button>
+                    <!--                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>-->
                 </td>
             </tr>
             </tbody>
@@ -285,7 +285,7 @@
         <td>{{course['type']}}</td>
         <td>{{course['dept_name']}}</td>
         <td>{{course['course_name']}}</td>
-        <td>{{course['instructor_id']}}</td>
+        <td>{{course['instructor_name']}}</td>
         <td>{{course['credits']}}({{course['hour']}})</td>
         <td>{{course['timeslot']}}</td>
     </tr>
