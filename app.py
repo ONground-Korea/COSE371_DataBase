@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
+connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
 connect.autocommit=True
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user=None
@@ -116,7 +116,17 @@ def mypage():
         "SELECT * FROM student JOIN login ON student.std_id=login.std_id JOIN instructor ON student.std_instructor=instructor.instructor_id WHERE login.id='%s'"%user
     )
     result=cur.fetchall()
-    return render_template('mypage.html', user=result[0])
+
+    # GPA
+    # TODO
+    # sql help......
+    cur.execute(
+
+        "SELECT SUM(grades.number * course.credits)/SUM(course.credits) FROM takes, course, section, grades WHERE takes.std_id='%s' and course.course_id=section.course_id and section.id=takes.section_id and takes.grade=grades.alphabet;" %user
+    )
+    gpa = cur.fetchall()
+    print(gpa)
+    return render_template('mypage.html', user=result[0], gpa=gpa)
 
 
 @app.route('/changepw', methods=['GET', 'POST'])
