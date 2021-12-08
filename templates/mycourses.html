@@ -57,7 +57,11 @@
         <td>{{course['course_name']}}</td>
         <td>{{course['instructor_name']}}</td>
         <td>{{course['credits']}}({{course['hour']}})</td>
-        <td>{{course['timeslot']}}</td>
+        <td>
+            {% for timeslot in course['timeslot'] %}
+            {{timeslot}}<br>
+            {% endfor %}
+        </td>
         <td>{{course['grade']}}</td>
     </tr>
     {% endfor %}

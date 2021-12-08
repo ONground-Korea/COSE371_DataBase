@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
+connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
 connect.autocommit=True
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user=None
@@ -31,9 +31,17 @@ def main():
 @app.route('/mycourses')
 def mycourses():
     global user
-    query = "SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE course.course_id=section.course_id AND section.id=temp.section_id AND temp.id='%s'"%user
+    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, (course JOIN department ON course.dept_name=department.dept_name) AS c, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s'"%user
     cur.execute(query)
     result=cur.fetchall()
+    print(result)
+    for i in range(len(result)):
+        query2="SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s' ORDER BY timeslot_id ASC;"%result[i]['idx']
+        cur.execute(query2)
+        temp=cur.fetchall()
+        result[i]['timeslot']=[]
+        for j in temp:
+            result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
     return render_template('mycourses.html', courses=result)
 
 
@@ -137,7 +145,6 @@ def changepw():
         cur.execute(
             "UPDATE login SET pw='%s' WHERE id = '%s';" % (hashlib.sha512(password.encode()).hexdigest(), id)
         )
-        cur.commit()
         flash('Updated')
         return render_template('login.html')
     return render_template('changepw.html')
@@ -152,13 +159,14 @@ def login():
         cur.execute(
             "SELECT * FROM login WHERE id='%s' AND pw='%s';" % (id, hashlib.sha512(password.encode()).hexdigest()))
         result = cur.fetchall()
-        user=result[0]['id']
         if len(result) != 1:
             flash('No Matching Information')
             return render_template('login.html')
         elif id == 'admin':
+            user=result[0]['id']
             return render_template('admin.html', user=user)
         else:
+            user=result[0]['id']
             return render_template('mainpage.html', user=user)
     return render_template('login.html')
 
@@ -174,7 +182,6 @@ def register():
         cur.execute(
             "INSERT INTO login VALUES ('%s', '%s', '%s');" % (std_id, id, hashlib.sha512(password.encode()).hexdigest())
         )
-        cur.commit()
         flash('Registered')
         return render_template('login.html')
     flash('No Corresponding Student ID Entry')
