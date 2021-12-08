@@ -7,7 +7,7 @@
 </head>
 <body>
 <div>
-    <form name="sForm" id="sForm" method="POST" action='/allcourses' onsubmit="return false">
+    <form name="sForm" id="sForm" method="POST" action='/admin'>
         <table>
             <colgroup>
                 <col width="60px">
@@ -202,7 +202,7 @@
                 <th>교과목명</th>
                 <td colspan="3"><input type="text" name="pCourNm" id="pCourNm"></td>
                 <td class="search">
-                    <button type="submit" id="btnSearch" class="btn-sub">조회</button>
+                    <button type="submit" name="submit" value="submit" id="btnSearch" class="btn-sub">조회</button>
                     <!--                    <button type="button" id="btnReset" onclick="javascript:fnReset()">초기화</button>-->
                 </td>
             </tr>
@@ -244,13 +244,13 @@
             <th>시간</th>
             <td><input type="text" name="hour"></td>
         </tr>
-        <button type="submit" name="submit" value="submit">과목 추가</button>
+        <button type="submit" name="submit2" value="submit2">과목 추가</button>
     </form>
 </div>
 
 <h3>과목 삭제</h3>
 <div>
-    <form action="/admin" name='delete' methods="POST" >
+    <form action="/admin" name='delete' method="POST" >
         <tr>
             <th>개설년도</th>
             <td><input type="text" name="dyear"></td>
@@ -287,7 +287,11 @@
         <td>{{course['course_name']}}</td>
         <td>{{course['instructor_name']}}</td>
         <td>{{course['credits']}}({{course['hour']}})</td>
-        <td>{{course['timeslot']}}</td>
+        <td>
+            {% for timeslot in course['timeslot'] %}
+            {{timeslot}}<br>
+            {% endfor %}
+        </td>
     </tr>
     {% endfor %}
     </tbody>
