@@ -29,7 +29,11 @@ def main():
 
 @app.route('/mycourses')
 def mycourses():
-    return render_template('mycourses.html')
+    global user
+    query = "SELECT * FROM section JOIN instructor ON section.instructor_id=instructor.instructor_id, course JOIN department ON course.dept_name=department.dept_name WHERE course.course_id=section.course_id, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE section.id=takes.section_id AND temp.id='%s'"%user
+    cur.execute(query)
+    result=cur.fetchall()
+    return render_template('mycourses.html', courses=result)
 
 
 @app.route('/allcourses', methods=['GET', 'POST'])
