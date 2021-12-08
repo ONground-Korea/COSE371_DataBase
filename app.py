@@ -108,6 +108,7 @@ def mypage():
         cur.execute(
             "DELETE FROM login WEHRE std_id = '%s';" % (std_id)
         )
+        flash('Eliminated')
         user=None
         return render_template('login.html')
     # TODO

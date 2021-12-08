@@ -1,3 +1,10 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<script>
+    alert("{{messages[0]}}")
+</script>
+{% endif %}
+{% endwith %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="ko">
