@@ -31,10 +31,9 @@ def main():
 @app.route('/mycourses')
 def mycourses():
     global user
-    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, (course JOIN department ON course.dept_name=department.dept_name) AS c, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s'"%user
+    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, (course JOIN department ON course.dept_name=department.dept_name) AS c, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s' ORDER BY s.year, s.semester, s.course_id, s.section_id ASC;"%user
     cur.execute(query)
     result=cur.fetchall()
-    print(result)
     for i in range(len(result)):
         query2="SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s' ORDER BY timeslot_id ASC;"%result[i]['idx']
         cur.execute(query2)
@@ -78,7 +77,7 @@ def allcourses():
                 query+=" AND temp1.section_id LIKE '%%%s%%'"%section_id
             if course_name != '':
                 query+=" AND temp2.course_name LIKE '%%%s%%'"%course_name
-    query+=' ORDER BY temp1.course_id, temp1.section_id ASC;'
+    query+=' ORDER BY temp1.year, temp1.semester, temp1.course_id, temp1.section_id ASC;'
     cur.execute(query)
     result = cur.fetchall()
     modified=[]
@@ -133,7 +132,6 @@ def mypage():
         "SELECT (SUM(credits*number)/SUM(credits))::NUMERIC(3,2) FROM (SELECT credits, number FROM (takes LEFT JOIN section ON takes.section_id=section.id) AS temp LEFT JOIN course ON course.course_id=temp.course_id LEFT JOIN grades ON temp.grade=grades.alphabet JOIN login ON temp.std_id=login.std_id WHERE login.id='%s' AND temp.grade IS NOT NULL) AS temp2;" % user
     )
     gpa = cur.fetchall()
-    print(gpa[0]['numeric'])
     return render_template('mypage.html', user=result[0], gpa=gpa[0]['numeric'])
 
 
@@ -281,7 +279,7 @@ def admin():
                 query2+=' ORDER BY timeslot_id ASC;'
                 cur.execute(query2)
                 temp=cur.fetchall()
-                if request.method != 'POST' or request.method == 'POST' and (day!='' or time!='') and len(temp)>0 or request.method == 'POST' and day=='' and time=='':
+                if (day!='' or time!='') and len(temp)>0 or day=='' and time=='':
                     modified.append(i)
             return render_template('admin.html', courses=modified)
     query = 'SELECT * FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS temp1, (course JOIN department ON course.dept_name=department.dept_name) AS temp2 WHERE temp2.course_id=temp1.course_id'
@@ -301,10 +299,8 @@ def admin():
         query2+=' ORDER BY timeslot_id ASC;'
         cur.execute(query2)
         temp=cur.fetchall()
-        if request.method != 'POST' or request.method == 'POST' and (day!='' or time!='') and len(temp)>0 or request.method == 'POST' and day=='' and time=='':
-            modified.append(i)
+        modified.append(i)
     return render_template('admin.html', courses=modified)
-
 
 if __name__ == '__main__':
     app.run()
