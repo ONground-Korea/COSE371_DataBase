@@ -25,14 +25,15 @@ def index():
 
 @app.route('/main')
 def main():
-    return render_template('mainpage.html')
+    global user
+    return render_template('mainpage.html', user=user)
 
 
 @app.route('/mycourses')
 def mycourses():
     global user
-    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, \
-            c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, \
+    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, c.*, temp.* \
+            FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, \
             (course JOIN department ON course.dept_name=department.dept_name) AS c, \
             (takes JOIN login ON takes.std_id=login.std_id) AS temp \
             WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s' \
@@ -47,6 +48,12 @@ def mycourses():
         result[i]['timeslot']=[]
         for j in temp:
             result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
+        query3="SELECT prereq_id FROM prereq WHERE course_id='%s' ORDER BY prereq_id ASC;"%result[i]['course_id']
+        cur.execute(query3)
+        temp2=cur.fetchall()
+        result[i]['prereq']=[]
+        for j in temp2:
+            result[i]['prereq'].append(j['prereq_id'])
     return render_template('mycourses.html', courses=result)
 
 
@@ -95,6 +102,12 @@ def allcourses():
         result[i]['timeslot']=[]
         for j in temp:
             result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
+        query3="SELECT prereq_id FROM prereq WHERE course_id='%s' ORDER BY prereq_id ASC;"%result[i]['course_id']
+        cur.execute(query3)
+        temp2=cur.fetchall()
+        result[i]['prereq']=[]
+        for j in temp2:
+            result[i]['prereq'].append(j['prereq_id'])
     for i in result:
         query2 = "SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp \
                 LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s'" % i['id']
@@ -172,7 +185,8 @@ def login():
             return render_template('login.html')
         elif id == 'admin':
             user=result[0]['id']
-            return render_template('admin.html', user=user)
+            return redirect(url_for('admin'))
+            # return render_template('admin.html', user=user)
         else:
             user=result[0]['id']
             return render_template('mainpage.html', user=user)
@@ -209,7 +223,6 @@ def admin():
         if request.form.get('submit2') == "submit2":
             # TODO
             # 과목 추가 기능
-            print(request.form)
             course_id = request.form['course_id']
             section_id = request.form['section_id']
             course_name = request.form['course_name']
@@ -220,6 +233,11 @@ def admin():
             year = request.form['year']
             semester = request.form['semester']
             instructor_id = request.form['instructor_id']
+            day = request.form['day']
+            time = request.form['time']
+            prereq_id = request.form['prereq_id']
+            building = request.form['building']
+            building_address = request.form['building_address']
             cur.execute("SELECT COUNT(course_id) FROM course WHERE course_id='%s'"%course_id)
             result=cur.fetchall()
             if result[0]['count']==0:
@@ -227,6 +245,20 @@ def admin():
                     "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
                         course_id, course_name, dept_name, type, credits, hour)
                 )
+            if prereq_id != '':
+                cur.execute("SELECT COUNT(course_id) FROM course WHERE course_id='%s'"%prereq_id)
+                result=cur.fetchall()
+                if result[0]['count']==1:
+                    cur.execute("SELECT COUNT(course_id) FROM prereq WHERE course_id='%s' AND prereq_id='%s'"%(course_id, prereq_id))
+                    result=cur.fetchall()
+                    if result[0]['count']==0:
+                        cur.execute("INSERT INTO prereq VALUES ('%s', '%s')"%(course_id, prereq_id))
+                    else:
+                        flash("Prerequisite Already Exists")
+                        return render_template('admin.html')
+                else:
+                    flash("Course ID Corresponding to Prerequisite ID Does Not Exist")
+                    return render_template('admin.html')
             cur.execute("SELECT COUNT(id) FROM section \
                         WHERE year=%d AND semester='%s' AND course_id='%s' AND section_id='%s'"\
                         %(int(year), semester, course_id, section_id))
@@ -236,6 +268,17 @@ def admin():
                     "INSERT INTO section VALUES (DEFAULT,'%s','%s','%d','%s','%s');" \
                     % (course_id, section_id, int(year), semester, instructor_id)
                 )
+            cur.execute("SELECT COUNT(section_time.section_id) FROM section_time JOIN section ON section_time.section_id=section.id \
+                        JOIN timeslot ON section_time.timeslot_id=timeslot.id \
+                        WHERE year=%d AND semester='%s' AND course_id='%s' AND section.section_id='%s' AND day='%s' AND period=%d"\
+                        %(int(year), semester, course_id, section_id, day, int(time)))
+            result=cur.fetchall()
+            if result[0]['count']==0:
+                cur.execute("INSERT INTO section_time \
+                            VALUES ((SELECT id FROM section WHERE year=%d AND semester='%s' AND course_id='%s' AND section_id='%s'), \
+                            (SELECT id FROM timeslot WHERE day='%s' AND period=%d), \
+                            (SELECT id FROM place WHERE building='%s' AND building_address='%s'))"\
+                            %(int(year), semester, course_id, section_id, day, int(time), building, building_address))
             else:
                 flash('Already Exists')
                 return render_template('admin.html')
@@ -294,6 +337,12 @@ def admin():
                 result[i]['timeslot']=[]
                 for j in temp:
                     result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
+                query3="SELECT prereq_id FROM prereq WHERE course_id='%s' ORDER BY prereq_id ASC;"%result[i]['course_id']
+                cur.execute(query3)
+                temp2=cur.fetchall()
+                result[i]['prereq']=[]
+                for j in temp2:
+                    result[i]['prereq'].append(j['prereq_id'])
             for i in result:
                 query2 = "SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s'" % i['id']
                 day = request.form['pDay']
@@ -312,7 +361,6 @@ def admin():
     query+=' ORDER BY temp1.course_id, temp1.section_id ASC;'
     cur.execute(query)
     result = cur.fetchall()
-    modified=[]
     for i in range(len(result)):
         query2="SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s' ORDER BY timeslot_id ASC;"%result[i]['id']
         cur.execute(query2)
@@ -320,13 +368,13 @@ def admin():
         result[i]['timeslot']=[]
         for j in temp:
             result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
-    for i in result:
-        query2 = "SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s'" % i['id']
-        query2+=' ORDER BY timeslot_id ASC;'
-        cur.execute(query2)
-        temp=cur.fetchall()
-        modified.append(i)
-    return render_template('admin.html', courses=modified)
+        query3 = "SELECT prereq_id FROM prereq WHERE course_id='%s' ORDER BY prereq_id ASC;" % result[i]['course_id']
+        cur.execute(query3)
+        temp2 = cur.fetchall()
+        result[i]['prereq'] = []
+        for j in temp2:
+            result[i]['prereq'].append(j['prereq_id'])
+    return render_template('admin.html', courses=result)
 
 if __name__ == '__main__':
     app.run()

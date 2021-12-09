@@ -54,7 +54,7 @@
                 <!--                        <option value="0309">대학원</option>-->
                 <!--                    </select>-->
                 <!--                </td>-->
-                <th class="isu">이수구분</th>
+                <th class="isu">단과대학전공/교양</th>
                 <td class="isu" colspan="2">
                     <div class="cols">
                         <!--                        <select name="pCourDiv" id="pCourDiv" onchange="fnCourDiv()">-->
@@ -251,6 +251,19 @@
             <th>시간</th>
             <td><input type="text" name="hour"></td>
         </tr>
+        <br>
+        <tr>
+            <th>요일</th>
+            <td><input type="text" name="day"></td>
+            <th>교시</th>
+            <td><input type="text" name="time"></td>
+            <th>선수과목</th>
+            <td><input type="text" name="prereq_id"></td>
+            <th>건물</th>
+            <td><input type="text" name="building"></td>
+            <th>호수</th>
+            <td><input type="text" name="building_address"></td>
+        </tr>
         <button type="submit" name="submit2" value="submit2">과목 추가</button>
     </form>
 </div>
@@ -282,6 +295,7 @@
     <th>담당교수</th>
     <th>학점(시간)</th>
     <th>강의시간</th>
+    <th>선수과목</th>
     </thead>
 
     <tbody>
@@ -297,6 +311,11 @@
         <td>
             {% for timeslot in course['timeslot'] %}
             {{timeslot}}<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for prereq in course['prereq'] %}
+            {{prereq}}<br>
             {% endfor %}
         </td>
     </tr>

@@ -44,6 +44,7 @@
     <th>담당교수</th>
     <th>학점(시간)</th>
     <th>강의시간</th>
+    <th>선수과목</th>
     <th>학점</th>
     </thead>
 
@@ -60,6 +61,11 @@
         <td>
             {% for timeslot in course['timeslot'] %}
             {{timeslot}}<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for prereq in course['prereq'] %}
+            {{prereq}}<br>
             {% endfor %}
         </td>
         <td>{{course['grade']}}</td>
