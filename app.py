@@ -31,11 +31,17 @@ def main():
 @app.route('/mycourses')
 def mycourses():
     global user
-    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, (course JOIN department ON course.dept_name=department.dept_name) AS c, (takes JOIN login ON takes.std_id=login.std_id) AS temp WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s' ORDER BY s.year, s.semester, s.course_id, s.section_id ASC;"%user
+    query = "SELECT s.id AS idx, s.course_id, s.section_id, s.year, s.semester, s.instructor_name, s.college_name, s.dept_name, \
+            c.*, temp.* FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS s, \
+            (course JOIN department ON course.dept_name=department.dept_name) AS c, \
+            (takes JOIN login ON takes.std_id=login.std_id) AS temp \
+            WHERE c.course_id=s.course_id AND s.id=temp.section_id AND temp.id='%s' \
+            ORDER BY s.year, s.semester, s.course_id, s.section_id ASC;"%user
     cur.execute(query)
     result=cur.fetchall()
     for i in range(len(result)):
-        query2="SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s' ORDER BY timeslot_id ASC;"%result[i]['idx']
+        query2="SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp \
+                LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s' ORDER BY timeslot_id ASC;"%result[i]['idx']
         cur.execute(query2)
         temp=cur.fetchall()
         result[i]['timeslot']=[]
@@ -46,7 +52,8 @@ def mycourses():
 
 @app.route('/allcourses', methods=['GET', 'POST'])
 def allcourses():
-    query = 'SELECT * FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS temp1, (course JOIN department ON course.dept_name=department.dept_name) AS temp2 WHERE temp2.course_id=temp1.course_id'
+    query = 'SELECT * FROM (section JOIN instructor ON section.instructor_id=instructor.instructor_id) AS temp1, \
+            (course JOIN department ON course.dept_name=department.dept_name) AS temp2 WHERE temp2.course_id=temp1.course_id'
     if request.method == 'POST':
         if request.form.get('submit') == "submit":
             year = request.form['pYear']
@@ -89,7 +96,8 @@ def allcourses():
         for j in temp:
             result[i]['timeslot'].append((j['day']+' ' if j['day'] is not None else '')+(str(j['period'])+'교시 ' if j['period'] is not None else '')+(j['building']+' ' if j['building'] is not None else '')+(j['building_address']+' ' if j['building_address'] is not None else '')+(j['place_name'] if j['place_name'] is not None else ''))
     for i in result:
-        query2 = "SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s'" % i['id']
+        query2 = "SELECT * FROM (section_time LEFT JOIN timeslot ON section_time.timeslot_id=timeslot.id) AS temp \
+                LEFT JOIN place ON temp.place_id=place.id WHERE section_id='%s'" % i['id']
         if request.method == 'POST':
             day = request.form['pDay']
             time = request.form['pStartTime']
@@ -113,7 +121,7 @@ def mypage():
     if request.method == 'POST':
         std_id = request.form['std_id']
         cur.execute(
-            "DELETE FROM login WEHRE std_id = '%s';" % (std_id)
+            "DELETE FROM login WHERE std_id = '%s' AND id='%s';" % (std_id, user)
         )
         flash('Eliminated')
         user=None
@@ -129,10 +137,13 @@ def mypage():
     # TODO
     # sql help......
     cur.execute(
-        "SELECT (SUM(credits*number)/SUM(credits))::NUMERIC(3,2) FROM (SELECT credits, number FROM (takes LEFT JOIN section ON takes.section_id=section.id) AS temp LEFT JOIN course ON course.course_id=temp.course_id LEFT JOIN grades ON temp.grade=grades.alphabet JOIN login ON temp.std_id=login.std_id WHERE login.id='%s' AND temp.grade IS NOT NULL) AS temp2;" % user
+        "SELECT (SUM(credits*number)/SUM(credits))::NUMERIC(3,2) \
+        FROM (SELECT credits, number FROM (takes LEFT JOIN section ON takes.section_id=section.id) AS temp \
+        LEFT JOIN course ON course.course_id=temp.course_id LEFT JOIN grades ON temp.grade=grades.alphabet JOIN login ON temp.std_id=login.std_id \
+        WHERE login.id='%s' AND temp.grade IS NOT NULL) AS temp2;" % user
     )
     gpa = cur.fetchall()
-    return render_template('mypage.html', user=result[0], gpa=gpa[0]['numeric'])
+    return render_template('mypage.html', user=result[0]['id'], gpa=gpa[0]['numeric'])
 
 
 @app.route('/changepw', methods=['GET', 'POST'])
@@ -171,18 +182,22 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    std_id = request.form['std_id']
-    id = request.form['id']
-    password = request.form['password']
-    cur.execute("SELECT std_id FROM login WHERE std_id='%s'"%std_id)
-    result=cur.fetchall()
-    if len(result)==1:
-        cur.execute(
-            "INSERT INTO login VALUES ('%s', '%s', '%s');" % (std_id, id, hashlib.sha512(password.encode()).hexdigest())
-        )
-        flash('Registered')
-        return render_template('login.html')
-    flash('No Corresponding Student ID Entry')
+    if request.method=='POST':
+        std_id = request.form['std_id']
+        id = request.form['id']
+        password = request.form['password']
+        cur.execute("SELECT COUNT(std_id) FROM student WHERE std_id='%s'"%std_id)
+        result=cur.fetchall()
+        cur.execute("SELECT COUNT(id) FROM login WHERE std_id='%s' OR id='%s'"%(std_id, id))
+        result2=cur.fetchall()
+        if result[0]['count']==1 and result2[0]['count']==0:
+            cur.execute(
+                "INSERT INTO login VALUES ('%s', '%s', '%s');" % (std_id, id, hashlib.sha512(password.encode()).hexdigest())
+            )
+            flash('Registered')
+            return render_template('login.html')
+        flash('No Corresponding Student ID Entry' if result[0]['count']==0 else 'Already Exists')
+        return render_template('register.html')
     return render_template('register.html')
 
 
@@ -205,14 +220,25 @@ def admin():
             year = request.form['year']
             semester = request.form['semester']
             instructor_id = request.form['instructor_id']
-            cur.execute(
-                "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
-                    course_id, course_name, dept_name, type, credits, hour)
-            )
-            cur.execute(
-                "INSERT INTO section VALUES (%s,'%s','%s','%s','%s','%s');" % (
-                    "DEFAULT", course_id, section_id, year, semester, instructor_id)
-            )
+            cur.execute("SELECT COUNT(course_id) FROM course WHERE course_id='%s'"%course_id)
+            result=cur.fetchall()
+            if result[0]['count']==0:
+                cur.execute(
+                    "INSERT INTO course VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (
+                        course_id, course_name, dept_name, type, credits, hour)
+                )
+            cur.execute("SELECT COUNT(id) FROM section \
+                        WHERE year=%d AND semester='%s' AND course_id='%s' AND section_id='%s'"\
+                        %(int(year), semester, course_id, section_id))
+            result=cur.fetchall()
+            if result[0]['count']==0:
+                cur.execute(
+                    "INSERT INTO section VALUES (DEFAULT,'%s','%s','%d','%s','%s');" \
+                    % (course_id, section_id, int(year), semester, instructor_id)
+                )
+            else:
+                flash('Already Exists')
+                return render_template('admin.html')
             flash('Added')
             return render_template('admin.html')
         elif request.form.get('delete') == "delete":
