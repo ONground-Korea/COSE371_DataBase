@@ -216,6 +216,8 @@ insert into instructor values ('2020320014', '민성기','정보대학','컴퓨�
 insert into instructor values ('2020320015', '김효곤','정보대학','컴퓨터학과');
 insert into instructor values ('2020320016', '이도길','정보대학','컴퓨터학과');
 
+insert into student values ('2020329999', 'test', '정보대학', '컴퓨터학과', null, '2020320001', 'present', '01099999999', '우리은하 어딘가', '99999', '20011231', 'test@test.com');
+
 insert into student values ('2020320000', 'admin', '정보대학', '컴퓨터학과', null, '2020320002', 'present', '00000000000', '서울특별시 머드민 어드민', '00000', '20010101', 'admin@gmail.com');
 insert into login values ('2020320000', 'admin', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe');
 

@@ -132,7 +132,6 @@ def mypage():
         "SELECT * FROM student JOIN login ON student.std_id=login.std_id JOIN instructor ON student.std_instructor=instructor.instructor_id WHERE login.id='%s'"%user
     )
     result=cur.fetchall()
-    print(result)
     # GPA
     # TODO
     # sql help......
@@ -143,7 +142,7 @@ def mypage():
         WHERE login.id='%s' AND temp.grade IS NOT NULL) AS temp2;" % user
     )
     gpa = cur.fetchall()
-    return render_template('mypage.html', user=result[0]['id'], gpa=gpa[0]['numeric'])
+    return render_template('mypage.html', user=result[0], gpa=gpa[0]['numeric'])
 
 
 @app.route('/changepw', methods=['GET', 'POST'])
@@ -196,6 +195,7 @@ def register():
             )
             flash('Registered')
             return render_template('login.html')
+        print(result[0])
         flash('No Corresponding Student ID Entry' if result[0]['count']==0 else 'Already Exists')
         return render_template('register.html')
     return render_template('register.html')
