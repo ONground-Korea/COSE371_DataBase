@@ -9,18 +9,15 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
+connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
 connect.autocommit=True
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user=None
 
-# @app.route('/program/<name>')
-# def program(name):
-#    return render_template('bootstrap.html', name=name)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect("/login")
 
 
 @app.route('/main')
