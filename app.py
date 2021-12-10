@@ -68,7 +68,7 @@ def allcourses():
             course_id = request.form['pCourCd']
             section_id = request.form['pCourCls']
             course_name = request.form['pCourNm']
-            # TODO
+
             if year != '':
                 query += " AND temp1.year=%d" % int(year)
             if semester != '':
@@ -136,15 +136,12 @@ def mypage():
         flash('Eliminated')
         user=None
         return render_template('login.html')
-    # TODO
-    # 학생 개인정보 가져오는 쿼리 짜야함.
+
     cur.execute(
         "SELECT * FROM student JOIN login ON student.std_id=login.std_id JOIN instructor ON student.std_instructor=instructor.instructor_id WHERE login.id='%s'"%user
     )
     result=cur.fetchall()
     # GPA
-    # TODO
-    # sql help......
     cur.execute(
         "SELECT (SUM(credits*number)/SUM(credits))::NUMERIC(3,2) \
         FROM (SELECT credits, number FROM (takes LEFT JOIN section ON takes.section_id=section.id) AS temp \
@@ -214,11 +211,11 @@ def register():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    # TODO
+
     # 기본 검색 기능은 일반 유저와 동일하게 가능하도록.
     if request.method == 'POST':
         if request.form.get('submit2') == "submit2":
-            # TODO
+
             # 과목 추가 기능
             course_id = request.form['course_id']
             section_id = request.form['section_id']
