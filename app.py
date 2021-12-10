@@ -9,24 +9,15 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-<<<<<<< HEAD
 connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
 connect.autocommit = True
-=======
-connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
-connect.autocommit=True
->>>>>>> ad060854f28ddc18978010581f164348b45abb66
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user = None
 
 
 @app.route('/')
 def index():
-<<<<<<< HEAD
     return redirect(url_for('login'))
-=======
-    return redirect("/login")
->>>>>>> ad060854f28ddc18978010581f164348b45abb66
 
 
 @app.route('/main')
@@ -157,19 +148,10 @@ def mypage():
         flash('Eliminated')
         user = None
         return render_template('login.html')
-<<<<<<< HEAD
-=======
-
->>>>>>> ad060854f28ddc18978010581f164348b45abb66
     cur.execute(
         "SELECT * FROM student JOIN login ON student.std_id=login.std_id JOIN instructor ON student.std_instructor=instructor.instructor_id WHERE login.id='%s'" % user
     )
-<<<<<<< HEAD
     result = cur.fetchall()
-=======
-    result=cur.fetchall()
-    # GPA
->>>>>>> ad060854f28ddc18978010581f164348b45abb66
     cur.execute(
         "SELECT (SUM(credits*number)/SUM(credits))::NUMERIC(3,2) \
         FROM (takes LEFT JOIN section ON takes.section_id=section.id) AS temp \
@@ -248,17 +230,8 @@ def register():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-<<<<<<< HEAD
     if request.method == 'POST':
         if request.form.get('submit2') == "submit2":
-=======
-
-    # 기본 검색 기능은 일반 유저와 동일하게 가능하도록.
-    if request.method == 'POST':
-        if request.form.get('submit2') == "submit2":
-
-            # 과목 추가 기능
->>>>>>> ad060854f28ddc18978010581f164348b45abb66
             course_id = request.form['course_id']
             section_id = request.form['section_id']
             course_name = request.form['course_name']
