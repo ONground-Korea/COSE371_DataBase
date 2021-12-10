@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "htmlisnotaprogramminglanguage"
 Bootstrap(app)
 
-connect = psycopg2.connect("dbname=sugang user=postgres password=0000 client_encoding=utf8")
+connect = psycopg2.connect("dbname=termproject user=postgres password=wkdrnwkdrn1@ client_encoding=utf8")
 connect.autocommit = True
 cur = connect.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 user = None
@@ -168,12 +168,12 @@ def changepw():
     if request.method == 'POST':
         id = request.form['id']
         password = request.form['pw']
-        confirm_password = request.form['comfirm_pw']
+        confirm_password = request.form['confirm_pw']
         if id != user:
             flash('Access Denied')
             return render_template('changepw.html')
         if password != confirm_password:
-            flash('Password Comfirmation Failed')
+            flash('Password Confirmation Failed')
             return render_template('changepw.html')
         cur.execute(
             "UPDATE login SET pw='%s' WHERE id = '%s';" % (hashlib.sha512(password.encode()).hexdigest(), id)
