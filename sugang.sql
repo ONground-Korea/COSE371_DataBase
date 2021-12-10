@@ -23,7 +23,7 @@ create table place (
 );
 create table timeslot (
     id serial primary key,
-    day varchar(9) check(day in ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')),
+    day varchar(9) check(day in ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')) not null,
     period int check(period>=1),
     start_time time not null,
     end_time time not null
@@ -34,12 +34,12 @@ create table grades (
 );
 create table department (
     dept_name varchar(10) primary key,
-    college_name varchar(10) references college(college_name) not null
+    college_name varchar(10) references college(college_name) on delete cascade not null
 );
 create table course (
     course_id varchar(7) primary key,
     course_name varchar(50) not null,
-    dept_name varchar(30) references department(dept_name) not null,
+    dept_name varchar(30) references department(dept_name) on delete cascade not null,
     type varchar(14) check(type in ('major_required', 'major_elective', 'elective')) not null,
     credits int check(credits>=0) not null,
     hour int check(hour>=0) not null
@@ -52,19 +52,19 @@ create table prereq (
 create table instructor (
     instructor_id varchar(10) primary key,
     instructor_name varchar(30) not null,
-    college_name varchar(10) references college(college_name) not null,
-    dept_name varchar(10) references department(dept_name) not null
+    college_name varchar(10) references college(college_name) on delete cascade not null,
+    dept_name varchar(10) references department(dept_name) on delete cascade not null
 );
 create table section (
     id serial primary key,
-    course_id varchar(7) references course(course_id),
+    course_id varchar(7) references course(course_id) on delete cascade not null,
     section_id varchar(2),
-    year int check(year>=1905),
-    semester varchar(6) check(semester in ('spring', 'summer', 'fall', 'winter')),
+    year int check(year>=1905) not null,
+    semester varchar(6) check(semester in ('spring', 'summer', 'fall', 'winter')) not null,
     instructor_id varchar(20) references instructor(instructor_id)
 );
 create table section_time (
-    section_id int references section(id) not null,
+    section_id int references section(id) on delete cascade not null,
     timeslot_id int references timeslot(id),
     place_id int references place(id),
     primary key(section_id, timeslot_id)
@@ -72,10 +72,10 @@ create table section_time (
 create table student (
     std_id varchar(10) primary key,
     name varchar(20) not null,
-    college varchar(10) references college(college_name) not null,
-    first_major varchar(10) references department(dept_name) not null,
+    college varchar(10) references college(college_name) on delete cascade not null,
+    first_major varchar(10) references department(dept_name) on delete cascade not null,
     second_major varchar(10) references department(dept_name),
-    std_instructor varchar(20) references instructor(instructor_id) not null,
+    std_instructor varchar(20) references instructor(instructor_id) on delete cascade not null,
     std_status varchar(7) check(std_status in ('present', 'absent', 'kicked')) not null,
     phone_number varchar(11),
     address varchar(100),
@@ -90,10 +90,9 @@ create table login (
 );
 create table takes (
     std_id varchar(10) references student(std_id) on delete cascade not null,
-    section_id int references section(id) not null,
+    section_id int references section(id) on delete cascade not null,
     grade varchar(2) references grades(alphabet),
-    primary key (std_id, section_id)
-);
+    primary key (std_id, section_id));
 
 insert into college values ('정보대학');
 insert into college values ('정경대학');
